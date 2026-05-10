@@ -3,10 +3,9 @@
 //! Supports mp3, ogg/vorbis, flac, wav, aac, m4a, opus, alac, aiff.
 //! Decodes to planar f32 PCM frames suitable for the real-time audio graph.
 
-use bellow_rt::SampleClock;
 use std::fs::File;
 use std::path::Path;
-use symphonia::core::audio::{AudioBufferRef, SampleBuffer};
+use symphonia::core::audio::SampleBuffer;
 use symphonia::core::codecs::{DecoderOptions, CODEC_TYPE_NULL};
 use symphonia::core::formats::FormatOptions;
 use symphonia::core::io::MediaSourceStream;
@@ -82,7 +81,7 @@ pub fn decode_file<P: AsRef<Path>>(path: P) -> Result<DecodedAudio, DecodeError>
         }
 
         if let Some(ref mut buf) = sample_buf {
-            buf.copy_from_planar_ref(decoded);
+            buf.copy_planar_ref(decoded);
             samples.extend_from_slice(buf.samples());
             total_samples += buf.samples().len() as u64;
         }
@@ -120,7 +119,7 @@ impl StreamingDecoder {
             .format(&hint, mss, &format_opts, &metadata_opts)
             .map_err(|e| DecodeError::Probe(e.to_string()))?;
 
-        let mut format = probed.format;
+        let format = probed.format;
 
         let track = format
             .tracks()
@@ -182,7 +181,7 @@ impl StreamingDecoder {
             }
 
             if let Some(ref mut buf) = self.sample_buf {
-                buf.copy_from_planar_ref(decoded);
+                buf.copy_planar_ref(decoded);
                 let chunk = buf.samples();
                 let needed = ((max_frames - frames_read) * self.channels as usize).min(chunk.len());
                 out.extend_from_slice(&chunk[..needed]);

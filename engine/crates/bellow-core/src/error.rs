@@ -10,6 +10,8 @@ pub enum EngineError {
     InvalidSampleRate(u32),
     #[error("Invalid buffer size: {0}")]
     InvalidBufferSize(usize),
+    #[error("Sound not found: {0}")]
+    SoundNotFound(String),
     #[error("IO error: {0}")]
     Io(#[from] std::io::Error),
     #[error("{0}")]

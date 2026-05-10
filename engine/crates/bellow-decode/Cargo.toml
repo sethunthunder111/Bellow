@@ -11,7 +11,6 @@ description = "Audio file decoder front-end (Symphonia) for the Bellow audio eng
 
 [dependencies]
 bellow-rt = { path = "../bellow-rt" }
-bellow-core = { path = "../bellow-core" }
 
 symphonia = { version = "0.5", features = ["all", "opt-simd"] }
 thiserror = "1.0"

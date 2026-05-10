@@ -70,11 +70,9 @@ impl RpcServer {
             let (socket, addr) = listener.accept().await?;
             println!("[bellow-daemon] Client connected: {}", addr);
             let engine = Arc::clone(&self.engine);
-            tokio::spawn(async move {
-                if let Err(e) = handle_client(socket, engine).await {
-                    eprintln!("[bellow-daemon] Client error: {}", e);
-                }
-            });
+            if let Err(e) = handle_client(socket, engine).await {
+                eprintln!("[bellow-daemon] Client error: {}", e);
+            }
         }
     }
 }

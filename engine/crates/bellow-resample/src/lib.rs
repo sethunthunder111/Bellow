@@ -3,7 +3,7 @@
 //! Uses windowed-sinc interpolation. Supports any input/output rate pair.
 
 use rubato::{
-    InterpolationParameters, InterpolationType, Resampler, SincFixedIn, WindowFunction,
+    Resampler, SincFixedIn, SincInterpolationParameters, SincInterpolationType, WindowFunction,
 };
 use thiserror::Error;
 
@@ -11,6 +11,8 @@ use thiserror::Error;
 pub enum ResampleError {
     #[error("Rubato error: {0}")]
     Rubato(#[from] rubato::ResampleError),
+    #[error("Rubato construction error: {0}")]
+    Construction(#[from] rubato::ResamplerConstructionError),
     #[error("Invalid channel count: {0}")]
     InvalidChannels(u16),
 }
@@ -31,10 +33,10 @@ impl SamplerateConverter {
         chunk_size: usize,
     ) -> Result<Self, ResampleError> {
         let ch = channels as usize;
-        let params = InterpolationParameters {
+        let params = SincInterpolationParameters {
             sinc_len: 256,
             f_cutoff: 0.95,
-            interpolation: InterpolationType::Linear,
+            interpolation: SincInterpolationType::Linear,
             oversampling_factor: 256,
             window: WindowFunction::BlackmanHarris2,
         };

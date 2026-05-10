@@ -2,8 +2,6 @@
 
 use cpal::traits::{DeviceTrait, HostTrait};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
-
 /// Device capability info.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct DeviceInfo {
@@ -69,29 +67,20 @@ pub fn list_devices() -> Result<DeviceList, cpal::DevicesError> {
             info.supported_sample_rates = collect_sample_rates(&device, false);
         }
 
-        if default_in
-            .as_ref()
-            .map(|d| d.name().ok())
-            .flatten()
-            == Some(name.clone())
-        {
-            info.is_default = true;
-            inputs.push(info.clone());
-        } else if info.is_input {
-            inputs.push(info);
-        }
+        let is_default_in =
+            default_in.as_ref().map(|d| d.name().ok()).flatten() == Some(name.clone());
+        let is_default_out =
+            default_out.as_ref().map(|d| d.name().ok()).flatten() == Some(name.clone());
 
-        if default_out
-            .as_ref()
-            .map(|d| d.name().ok())
-            .flatten()
-            == Some(name.clone())
-        {
-            let mut out_info = info.clone();
-            out_info.is_default = true;
+        if info.is_input {
+            let mut in_info = info.clone();
+            in_info.is_default = is_default_in;
+            inputs.push(in_info);
+        }
+        if info.is_output {
+            let mut out_info = info;
+            out_info.is_default = is_default_out;
             outputs.push(out_info);
-        } else if info.is_output {
-            outputs.push(info);
         }
     }
 
@@ -110,23 +99,33 @@ pub struct DeviceList {
 }
 
 fn collect_sample_rates(device: &cpal::Device, input: bool) -> Vec<u32> {
-    let configs = if input {
-        device.supported_input_configs()
-    } else {
-        device.supported_output_configs()
-    };
-
-    match configs {
-        Ok(mut it) => {
-            let mut rates = Vec::new();
-            while let Some(c) = it.next() {
-                rates.push(c.min_sample_rate().0);
-                rates.push(c.max_sample_rate().0);
+    if input {
+        match device.supported_input_configs() {
+            Ok(mut it) => {
+                let mut rates = Vec::new();
+                while let Some(c) = it.next() {
+                    rates.push(c.min_sample_rate().0);
+                    rates.push(c.max_sample_rate().0);
+                }
+                rates.sort_unstable();
+                rates.dedup();
+                rates
             }
-            rates.sort_unstable();
-            rates.dedup();
-            rates
+            Err(_) => vec![44100, 48000, 96000],
         }
-        Err(_) => vec![44100, 48000, 96000],
+    } else {
+        match device.supported_output_configs() {
+            Ok(mut it) => {
+                let mut rates = Vec::new();
+                while let Some(c) = it.next() {
+                    rates.push(c.min_sample_rate().0);
+                    rates.push(c.max_sample_rate().0);
+                }
+                rates.sort_unstable();
+                rates.dedup();
+                rates
+            }
+            Err(_) => vec![44100, 48000, 96000],
+        }
     }
 }

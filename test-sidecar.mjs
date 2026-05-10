@@ -7,7 +7,8 @@
  */
 
 import { spawn } from "child_process";
-import { connect } from "net";
+import { existsSync } from "fs";
+import { connect, createServer } from "net";
 import { join, dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -24,18 +25,14 @@ function findDaemon() {
     join(__dirname, "engine", "target", "debug", "bellow-daemon.exe"),
   ];
   for (const p of candidates) {
-    try {
-      if (require("fs").existsSync(p)) return p;
-    } catch {
-      // not found
-    }
+    if (existsSync(p)) return p;
   }
   throw new Error("bellow-daemon binary not found. Run cargo build first.");
 }
 
 function findFreePort() {
   return new Promise((resolve, reject) => {
-    const srv = require("net").createServer();
+    const srv = createServer();
     srv.listen(0, "127.0.0.1", () => {
       const port = srv.address().port;
       srv.close(() => resolve(port));

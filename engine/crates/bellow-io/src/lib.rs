@@ -10,13 +10,13 @@
 //! ASIO is behind a feature flag.
 
 use cpal::traits::{DeviceTrait, HostTrait, StreamTrait};
-use cpal::{BufferSize, SampleFormat, SampleRate, StreamConfig, SupportedBufferSize};
+use cpal::{BufferSize, SampleRate, StreamConfig};
 use crossbeam_channel::{bounded, Receiver, Sender};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 
-pub mod error;
 pub mod devices;
+pub mod error;
 pub use devices::*;
 pub use error::IoError;
 
@@ -102,7 +102,7 @@ pub struct PlaybackQueue {
 }
 
 impl PlaybackQueue {
-    pub fn new(channels: u16, sample_rate: u32, capacity_frames: usize) -> Self {
+    pub fn new(channels: u16, sample_rate: u32, _capacity_frames: usize) -> Self {
         let (tx, rx) = bounded::<Vec<f32>>(16);
         Self {
             tx,
@@ -122,7 +122,7 @@ impl PlaybackQueue {
     /// Fill an output buffer from the queue. Call this inside the CPAL callback.
     pub fn fill_buffer(&mut self, out: &mut [f32]) {
         let mut written = 0usize;
-        let frame_size = self.channels as usize;
+        let _frame_size = self.channels as usize;
 
         while written < out.len() {
             if self.chunk_offset >= self.current_chunk.len() {
@@ -141,8 +141,9 @@ impl PlaybackQueue {
 
             let available = self.current_chunk.len() - self.chunk_offset;
             let to_write = (out.len() - written).min(available);
-            out[written..written + to_write]
-                .copy_from_slice(&self.current_chunk[self.chunk_offset..self.chunk_offset + to_write]);
+            out[written..written + to_write].copy_from_slice(
+                &self.current_chunk[self.chunk_offset..self.chunk_offset + to_write],
+            );
             self.chunk_offset += to_write;
             written += to_write;
         }
