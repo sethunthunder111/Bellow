@@ -1,0 +1,20 @@
+{
+  "name": "bellow-workspace",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "bun run build:contract && bun run build:bellow && bun run build:engine",
+    "build:contract": "cd packages/bellow-contract && bun run build",
+    "build:bellow": "cd packages/bellow && bun run build",
+    "build:engine": "cargo build --release --manifest-path engine/Cargo.toml",
+    "test": "bun test packages/bellow && cargo test --manifest-path engine/Cargo.toml",
+    "lint": "biome check .",
+    "format": "biome check --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^1.9.4",
+    "typescript": "^5.7.0"
+  }
+}

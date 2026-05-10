@@ -1,0 +1,21 @@
+[package]
+name = "bellow-dsp"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+description = "DSP FX nodes for the Bellow audio engine"
+
+[dependencies]
+bellow-rt = { path = "../bellow-rt" }
+bellow-core = { path = "../bellow-core" }
+
+num-complex = "0.4"
+realfft = "3.3"
+thiserror = "1.0"
+serde = { version = "1.0", features = ["derive"] }
+
+[dev-dependencies]

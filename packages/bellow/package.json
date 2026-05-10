@@ -1,0 +1,36 @@
+{
+  "name": "@sethunthunder111/bellow",
+  "version": "0.0.1",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist",
+    "native"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "postinstall": "node ./src/engine/build.mjs",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "@sethunthunder111/bellow-contract": "workspace:*",
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "@napi-rs/cli": "^3.6.2",
+    "@types/node": "^22.0.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "bun": ">=1.1.0"
+  }
+}

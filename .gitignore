@@ -1,0 +1,46 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+target/
+*.node
+
+# Logs
+*.log
+
+# Environment
+.env
+
+# OS files
+.DS_Store
+
+# Debug
+debug/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# NAPI-RS
+*.d.ts.map
+
+# Audio files (test assets)
+*.mp3
+*.wav
+*.flac
+*.ogg
+*.aac
+*.m4a
+*.opus
+
+# Windsurf
+.windsurf/
+
+# Rust
+Cargo.lock
+
+# Daemon binaries
+*.exe
+bellow-daemon

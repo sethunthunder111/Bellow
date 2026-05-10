@@ -1,0 +1,18 @@
+[package]
+name = "bellow-resample"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+description = "Sample-rate conversion (rubato) for the Bellow audio engine"
+
+[dependencies]
+bellow-rt = { path = "../bellow-rt" }
+
+rubato = "0.14"
+thiserror = "1.0"
+
+[dev-dependencies]

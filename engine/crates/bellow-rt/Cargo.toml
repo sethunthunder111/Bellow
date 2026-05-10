@@ -1,0 +1,14 @@
+[package]
+name = "bellow-rt"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+description = "Real-time audio primitives: lock-free queues, atomic params, sample clock"
+
+[dependencies]
+
+[dev-dependencies]

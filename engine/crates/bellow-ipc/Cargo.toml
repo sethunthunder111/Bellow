@@ -1,0 +1,18 @@
+[package]
+name = "bellow-ipc"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+
+description = "Framed transport + JSON-RPC dispatcher for sidecar mode"
+
+[dependencies]
+bellow-core = { path = "../bellow-core" }
+bellow-io = { path = "../bellow-io" }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+thiserror = { workspace = true }
