@@ -1,6 +1,7 @@
 {
   "name": "@sethunthunder111/bellow",
   "version": "0.0.1",
+  "description": "High-performance audio engine for TypeScript, powered by Rust — pro playback, FX, spatial audio, and DJ tools",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
