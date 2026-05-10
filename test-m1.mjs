@@ -85,6 +85,8 @@ async function main() {
   const proc = spawn(daemonPath, ["--port", String(port)], {
     stdio: ["ignore", "pipe", "pipe"],
   });
+  proc.stdout?.on("data", (d) => console.log("[daemon]", d.toString().trim()));
+  proc.stderr?.on("data", (d) => console.log("[daemon]", d.toString().trim()));
 
   await new Promise((r) => setTimeout(r, 300));
 
@@ -100,7 +102,7 @@ async function main() {
   // Init engine
   const initRes = await rpc("engine.init", {
     sampleRate: 48000,
-    bufferSize: 256,
+    bufferSize: 1024,
     internalPrecision: "f32",
   });
   if (initRes.result?.ok !== true) {

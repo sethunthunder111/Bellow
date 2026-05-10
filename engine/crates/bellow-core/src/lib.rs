@@ -9,4 +9,4 @@ pub mod graph;
 
 pub use engine::{Engine, EngineConfig, EngineInfo, MasterState, SoundHandle};
 pub use error::EngineError;
-pub use graph::{AudioGraph, MixerState, PlayingSound};
+pub use graph::{AtomicSound, AudioGraph};

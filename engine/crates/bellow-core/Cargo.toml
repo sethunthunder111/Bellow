@@ -13,6 +13,7 @@ description = "Audio engine core: graph, scheduler, mixer"
 bellow-rt = { path = "../bellow-rt" }
 bellow-decode = { path = "../bellow-decode" }
 bellow-io = { path = "../bellow-io" }
+bellow-resample = { path = "../bellow-resample" }
 serde = { workspace = true }
 serde_json = { workspace = true }
 thiserror = { workspace = true }

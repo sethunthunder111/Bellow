@@ -41,10 +41,17 @@ impl OutputStream {
 
 /// Build and start an output stream on the default device.
 /// The `render_callback` is called with an interleaved f32 buffer to fill.
+///
+/// `requested_sample_rate` is a hint. The actual rate used is the device's
+/// preferred rate if `requested_sample_rate == 0`, otherwise the requested
+/// rate (must be supported by the device).
+///
+/// `requested_buffer_size == 0` means "device default" (recommended on
+/// Windows WASAPI shared mode for stable playback).
 pub fn build_output_stream<F>(
-    sample_rate: u32,
-    channels: u16,
-    buffer_size: u32,
+    requested_sample_rate: u32,
+    requested_channels: u16,
+    requested_buffer_size: u32,
     mut render_callback: F,
 ) -> Result<OutputStream, IoError>
 where
@@ -55,14 +62,24 @@ where
         .default_output_device()
         .ok_or(IoError::NoDefaultOutputDevice)?;
 
-    let mut config: StreamConfig = device
+    let default_cfg = device
         .default_output_config()
-        .map_err(|e| IoError::DeviceConfig(e.to_string()))?
-        .config();
+        .map_err(|e| IoError::DeviceConfig(e.to_string()))?;
 
-    config.sample_rate = SampleRate(sample_rate);
-    config.channels = channels;
-    config.buffer_size = BufferSize::Fixed(buffer_size);
+    let mut config: StreamConfig = default_cfg.config();
+
+    // Honor requested rate only if non-zero, else use device default
+    if requested_sample_rate != 0 {
+        config.sample_rate = SampleRate(requested_sample_rate);
+    }
+    if requested_channels != 0 {
+        config.channels = requested_channels;
+    }
+    if requested_buffer_size != 0 {
+        config.buffer_size = BufferSize::Fixed(requested_buffer_size);
+    } else {
+        config.buffer_size = BufferSize::Default;
+    }
 
     let running = Arc::new(AtomicBool::new(true));
 
