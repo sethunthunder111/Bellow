@@ -98,4 +98,58 @@ export class BellowEngine {
     await this.transport.dispose();
     this.ready = false;
   }
+
+  // ---- Sound (M1) ----
+  async soundLoad(src: string): Promise<SoundHandle> {
+    return this.transport.soundLoad(src);
+  }
+  async soundPlay(id: string): Promise<void> {
+    const res = await this.transport.soundPlay(id);
+    if (!res.ok) throw new Error(res.error ?? 'sound.play failed');
+  }
+  async soundPause(id: string): Promise<void> {
+    const res = await this.transport.soundPause(id);
+    if (!res.ok) throw new Error(res.error ?? 'sound.pause failed');
+  }
+  async soundStop(id: string): Promise<void> {
+    const res = await this.transport.soundStop(id);
+    if (!res.ok) throw new Error(res.error ?? 'sound.stop failed');
+  }
+  async soundSeek(id: string, positionMs: number): Promise<void> {
+    const res = await this.transport.soundSeek(id, positionMs);
+    if (!res.ok) throw new Error(res.error ?? 'sound.seek failed');
+  }
+  async soundSetVolume(id: string, volume: number): Promise<void> {
+    const res = await this.transport.soundSetVolume(id, volume);
+    if (!res.ok) throw new Error(res.error ?? 'sound.setVolume failed');
+  }
+  async soundSetRate(id: string, rate: number): Promise<void> {
+    const res = await this.transport.soundSetRate(id, rate);
+    if (!res.ok) throw new Error(res.error ?? 'sound.setRate failed');
+  }
+  async soundSetLoop(id: string, loop: boolean): Promise<void> {
+    const res = await this.transport.soundSetLoop(id, loop);
+    if (!res.ok) throw new Error(res.error ?? 'sound.setLoop failed');
+  }
+  async soundDispose(id: string): Promise<void> {
+    const res = await this.transport.soundDispose(id);
+    if (!res.ok) throw new Error(res.error ?? 'sound.dispose failed');
+  }
+  async soundList(): Promise<SoundHandle[]> {
+    return this.transport.soundList();
+  }
+
+  // ---- Master ----
+  async masterSetVolume(volumeDb: number): Promise<void> {
+    const res = await this.transport.masterSetVolume(volumeDb);
+    if (!res.ok) throw new Error(res.error ?? 'master.setVolume failed');
+  }
+  async masterGet(): Promise<MasterState> {
+    return this.transport.masterGet();
+  }
+
+  // ---- Devices ----
+  async devicesList(): Promise<DeviceList> {
+    return this.transport.devicesList();
+  }
 }

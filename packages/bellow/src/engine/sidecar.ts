@@ -1,4 +1,7 @@
-import type { EngineConfig, EngineVersion } from '@sethunthunder111/bellow-contract';
+import type {
+  EngineConfig, EngineVersion,
+  SoundHandle, MasterState, DeviceList,
+} from '@sethunthunder111/bellow-contract';
 import type { Transport } from './client.js';
 import { spawn } from 'child_process';
 import { join } from 'path';
@@ -158,5 +161,50 @@ export class SidecarTransport implements Transport {
       this.socket = null;
     }
     this.rejectAll(new Error('Transport disposed'));
+  }
+
+  // ---- Sound (M1) ----
+  async soundLoad(src: string): Promise<SoundHandle> {
+    return this.call('sound.load', { src }) as Promise<SoundHandle>;
+  }
+  async soundPlay(id: string): Promise<{ ok: boolean; error?: string }> {
+    return this.call('sound.play', { id }) as Promise<{ ok: boolean; error?: string }>;
+  }
+  async soundPause(id: string): Promise<{ ok: boolean; error?: string }> {
+    return this.call('sound.pause', { id }) as Promise<{ ok: boolean; error?: string }>;
+  }
+  async soundStop(id: string): Promise<{ ok: boolean; error?: string }> {
+    return this.call('sound.stop', { id }) as Promise<{ ok: boolean; error?: string }>;
+  }
+  async soundSeek(id: string, positionMs: number): Promise<{ ok: boolean; error?: string }> {
+    return this.call('sound.seek', { id, positionMs }) as Promise<{ ok: boolean; error?: string }>;
+  }
+  async soundSetVolume(id: string, volume: number): Promise<{ ok: boolean; error?: string }> {
+    return this.call('sound.setVolume', { id, volume }) as Promise<{ ok: boolean; error?: string }>;
+  }
+  async soundSetRate(id: string, rate: number): Promise<{ ok: boolean; error?: string }> {
+    return this.call('sound.setRate', { id, rate }) as Promise<{ ok: boolean; error?: string }>;
+  }
+  async soundSetLoop(id: string, loop: boolean): Promise<{ ok: boolean; error?: string }> {
+    return this.call('sound.setLoop', { id, loop }) as Promise<{ ok: boolean; error?: string }>;
+  }
+  async soundDispose(id: string): Promise<{ ok: boolean; error?: string }> {
+    return this.call('sound.dispose', { id }) as Promise<{ ok: boolean; error?: string }>;
+  }
+  async soundList(): Promise<SoundHandle[]> {
+    return this.call('sound.list', {}) as Promise<SoundHandle[]>;
+  }
+
+  // ---- Master ----
+  async masterSetVolume(volumeDb: number): Promise<{ ok: boolean; error?: string }> {
+    return this.call('master.setVolume', { volumeDb }) as Promise<{ ok: boolean; error?: string }>;
+  }
+  async masterGet(): Promise<MasterState> {
+    return this.call('master.get', {}) as Promise<MasterState>;
+  }
+
+  // ---- Devices ----
+  async devicesList(): Promise<DeviceList> {
+    return this.call('devices.list', {}) as Promise<DeviceList>;
   }
 }
