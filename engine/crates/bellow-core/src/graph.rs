@@ -163,7 +163,7 @@ impl AudioGraph {
     /// Resamples the decoded audio to the output sample rate if needed.
     pub fn add_sound(&self, id: String, mut decoded: DecodedAudio) -> (u64, u64) {
         if decoded.sample_rate != self.output_sample_rate && decoded.channels > 0 {
-            match bellow_resample::resample_linear(
+            match bellow_resample::resample_offline(
                 &decoded.samples,
                 decoded.sample_rate,
                 self.output_sample_rate,

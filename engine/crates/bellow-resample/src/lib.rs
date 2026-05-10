@@ -105,12 +105,12 @@ pub fn resample_offline(
         return Err(ResampleError::InvalidChannels(channels));
     }
 
-    let chunk_size: usize = 1024;
+    let chunk_size: usize = 8192;
     let params = SincInterpolationParameters {
-        sinc_len: 256,
+        sinc_len: 128,
         f_cutoff: 0.95,
         interpolation: SincInterpolationType::Linear,
-        oversampling_factor: 256,
+        oversampling_factor: 128,
         window: WindowFunction::BlackmanHarris2,
     };
     let mut resampler = SincFixedIn::<f32>::new(
